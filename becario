@@ -1,0 +1,18 @@
+//objeto Becario
+
+#include<iostream>
+#include<stdlib.h>
+
+using namespace std;
+
+class Becario{
+  private:
+    char nombre;
+    int id;
+    
+}
+int main(){
+
+system("pause");
+return 0;
+}
