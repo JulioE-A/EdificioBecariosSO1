@@ -11,7 +11,6 @@ using namespace std;
 sem_t tareas;
 sem_t imprimir;
 int tareasTerminadas = 0;
-int tareasTotales = 10;
 int listaTareas[20][2];
 bool entorpecedor = false;
 
@@ -33,6 +32,8 @@ void *becario(void *dato){
 
 	id=(int *)dato;
 	int horasTrabajadas = 0;
+	bool abandona = false;
+	
 	while((horasTrabajadas+listaTareas[tareasTerminadas][1])<8){
 		int tareaActual = tareasTerminadas;
 		tareasTerminadas++;
@@ -41,6 +42,7 @@ void *becario(void *dato){
 		
 		sem_wait(&tareas);
 		
+		//verificar si entorpecedor esta libre
 		if(!entorpecedor){
 			entorpecedor = true;
 			pegado = true;
@@ -48,6 +50,7 @@ void *becario(void *dato){
 			cout<<"Entorpecedor pegado a becario "<<*id<<endl;
 			sem_post(&imprimir);	
 		}
+		
 		
 		sem_wait(&imprimir);
 		cout<<"Becario "<<*id<<" escogiendo tarea"<<endl;
@@ -58,19 +61,35 @@ void *becario(void *dato){
 		
 		
 		//resolviendo problema
+		
 		for(int i=0; i<listaTareas[tareaActual][1];i++){
-			resolverTarea();
-			if(pegado){
-				resolverTarea();
-				molestado++;
-				horasTrabajadas++;
+			if(!abandona){
+				if(molestado<2){
+				
+					if(pegado){
+						resolverTarea();
+						molestado++;
+						horasTrabajadas++;
+					}
+					resolverTarea();
+					horasTrabajadas++;	
+				
+				}else{
+					sem_wait(&imprimir);
+					cout<<"Becario "<<*id<<" abandono tarea"<<endl;
+					sem_post(&imprimir);
+					abandona = true;
+					molestado = 0;
+				}	
+				
 			}
-			horasTrabajadas++;
+			
 		}
 		//resolviendo problema
 		
 		if(pegado){
 			entorpecedor = false;
+			abandona = false;
 		}
 		
 		sem_wait(&imprimir);
