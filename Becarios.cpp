@@ -33,7 +33,7 @@ void *becario(void *dato){
 
 	id=(int *)dato;
 	int horasTrabajadas = 0;
-	while(tareasTerminadas<tareasTotales){
+	while((horasTrabajadas+listaTareas[tareasTerminadas][1])<8){
 		int tareaActual = tareasTerminadas;
 		tareasTerminadas++;
 		bool pegado = false;
@@ -63,6 +63,7 @@ void *becario(void *dato){
 			if(pegado){
 				resolverTarea();
 				molestado++;
+				horasTrabajadas++;
 			}
 			horasTrabajadas++;
 		}
@@ -85,8 +86,8 @@ void *becario(void *dato){
 
 int main(int argc, char *argv[])
 {
-    int status;
-    int ids[5]={1,2,3,4,5};
+	int status;
+	int ids[5]={1,2,3,4,5};
     sem_init(&tareas,0, 1);
     sem_init(&imprimir,0,1);
     srand(time(NULL));
@@ -96,7 +97,6 @@ int main(int argc, char *argv[])
 		int random = rand()%(3-1+1)+1;
 		listaTareas[i][0]=i;
 		listaTareas[i][1]=random;
-		cout<<random<<endl;
 	}
     
     // creating thread objects
@@ -113,22 +113,22 @@ int main(int argc, char *argv[])
     
     pthread_create(&thrd_2,NULL,&becario,&ids[1]);
     
-    pthread_create(&thrd_3,NULL,&becario,&ids[2]);
+	pthread_create(&thrd_3,NULL,&becario,&ids[2]);
 	
-    pthread_create(&thrd_4,NULL,&becario,&ids[3]);
+	pthread_create(&thrd_4,NULL,&becario,&ids[3]);
 	   
     pthread_create(&thrd_5,NULL,&becario,&ids[4]);
-	
-    pthread_create(&thrd_6,NULL,&becario,&ids[5]);
+    
+	pthread_create(&thrd_6,NULL,&becario,&ids[5]);
     
     
 
     pthread_join(thrd_1, (void **)&status);
-    pthread_join(thrd_2, (void **)&status);
-    pthread_join(thrd_3, (void **)&status);
-    pthread_join(thrd_4, (void **)&status);
-    pthread_join(thrd_5, (void **)&status);
-    pthread_join(thrd_6, (void **)&status);
+	pthread_join(thrd_2, (void **)&status);
+    //pthread_join(thrd_3, (void **)&status);
+    //pthread_join(thrd_4, (void **)&status);
+    //pthread_join(thrd_5, (void **)&status);
+    //pthread_join(thrd_6, (void **)&status);
 
 
 
