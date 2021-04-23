@@ -11,7 +11,7 @@ using namespace std;
 sem_t tareas;
 sem_t imprimir;
 int tareasTerminadas = 0;
-int listaTareas[20][2];
+int listaTareas[50][2];
 bool entorpecedor = false;
 int horasBecarios[5];
 
@@ -66,7 +66,7 @@ void *becario(void *dato){
 		
 		
 		sem_wait(&imprimir);
-		cout<<"Becario "<<*id<<" escogiendo tarea"<<endl;
+		cout<<"Becario "<<*id<<" escogiendo tarea"<<", horas: "<<listaTareas[tareasTerminadas][1]<<endl;
 		escogerTarea();
 		sem_post(&imprimir);
 		
@@ -108,35 +108,43 @@ void *becario(void *dato){
 		
 		if(pegado){
 			entorpecedor = false;
-			abandona = false;
 		}
 		
-		sem_wait(&imprimir);
-		cout<<"Becario "<<*id<<" resolvio tarea "<<endl;
-		sem_post(&imprimir);
+		if(abandona){
+			abandona = false;
+		}else{
+			sem_wait(&imprimir);
+			cout<<"Becario "<<*id<<" resolvio tarea "<<endl;
+			sem_post(&imprimir);
+		}
+		
 		
 	}
 	
+	if(horasTrabajadas<8){
+		sem_wait(&imprimir);
+		cout<<"Becario "<<*id<<" parcheando"<<endl;
+		sem_post(&imprimir);
+	}
+	
 	horasBecarios[*id] = horasTrabajadas;
-	sem_wait(&imprimir);
-	cout<<"Becario "<<*id<<" parcheando"<<endl;
-	sem_post(&imprimir);
+	
 }
 
 
 int main(int argc, char *argv[])
 {
-    int status;
-    int ids[5]={1,2,3,4,5};
+	int status;
+	int ids[5]={1,2,3,4,5};
     sem_init(&tareas,0, 1);
     sem_init(&imprimir,0,1);
     srand(time(NULL));
     
-    for (int i =0; i<20;i++){
+    for (int i =0; i<50;i++){
 		
-	int random = rand()%(3-1+1)+1;
-	listaTareas[i][0]=i;
-	listaTareas[i][1]=random;
+		int random = rand()%(3-1+1)+1;
+		listaTareas[i][0]=i;
+		listaTareas[i][1]=random;
 	}
     
     // creating thread objects
@@ -153,18 +161,18 @@ int main(int argc, char *argv[])
     
     pthread_create(&thrd_2,NULL,&becario,&ids[1]);
     
-    pthread_create(&thrd_3,NULL,&becario,&ids[2]);
+	pthread_create(&thrd_3,NULL,&becario,&ids[2]);
 	
-    pthread_create(&thrd_4,NULL,&becario,&ids[3]);
+	pthread_create(&thrd_4,NULL,&becario,&ids[3]);
 	   
     pthread_create(&thrd_5,NULL,&becario,&ids[4]);
     
-    pthread_create(&thrd_6,NULL,&becario,&ids[5]);
+	pthread_create(&thrd_6,NULL,&becario,&ids[5]);
     
     
 
     pthread_join(thrd_1, (void **)&status);
-    pthread_join(thrd_2, (void **)&status);
+	pthread_join(thrd_2, (void **)&status);
     pthread_join(thrd_3, (void **)&status);
     pthread_join(thrd_4, (void **)&status);
     pthread_join(thrd_5, (void **)&status);
