@@ -125,10 +125,10 @@ int main(int argc, char *argv[])
 
     pthread_join(thrd_1, (void **)&status);
 	pthread_join(thrd_2, (void **)&status);
-    //pthread_join(thrd_3, (void **)&status);
-    //pthread_join(thrd_4, (void **)&status);
-    //pthread_join(thrd_5, (void **)&status);
-    //pthread_join(thrd_6, (void **)&status);
+    pthread_join(thrd_3, (void **)&status);
+    pthread_join(thrd_4, (void **)&status);
+    pthread_join(thrd_5, (void **)&status);
+    pthread_join(thrd_6, (void **)&status);
 
 
 
