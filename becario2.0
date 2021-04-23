@@ -6,7 +6,6 @@
 #include <cstdlib>
 #include <ctime>
 
-
 using namespace std;
 sem_t tareas;
 sem_t imprimir;
@@ -21,7 +20,7 @@ void resolverTarea(){
 
     for(i = 0; i < 20000; i++){
         for(j = 0; j < 10000; j++){
-        ;
+ 		;
 	    }
     }
 
@@ -36,9 +35,7 @@ void escogerTarea(){
         ;
 	    }
     }
-
 }
-
 
 void *becario(void *dato){
 	
@@ -66,8 +63,7 @@ void *becario(void *dato){
 			cout<<"Entorpecedor pegado a becario "<<*id<<endl;
 			sem_post(&imprimir);	
 		}
-		
-		
+				
 		sem_wait(&imprimir);
 		
 		cout<<"Becario "<<*id<<" escogiendo tarea"<<", horas: "<<listaTareas[tareasTerminadas][1]<<endl;
@@ -75,7 +71,6 @@ void *becario(void *dato){
 		sem_post(&imprimir);
 		
 		sem_post(&tareas);	
-		
 		
 		//resolviendo problema
 		
@@ -95,8 +90,7 @@ void *becario(void *dato){
 						}
 					}
 					resolverTarea();
-					horasTrabajadas++;	
-				
+					horasTrabajadas++;			
 				}else{
 					sem_wait(&imprimir);
 					cout<<"Becario "<<*id<<" abandono tarea"<<endl;
@@ -104,12 +98,10 @@ void *becario(void *dato){
 					abandona = true;
 					molestado = 0;
 				}	
-				
 			}
-			
 		}
-		//resolviendo problema
 		
+		//resolviendo problema
 		if(pegado){
 			entorpecedor = false;
 		}
@@ -121,8 +113,6 @@ void *becario(void *dato){
 			cout<<"Becario "<<*id<<" resolvio tarea "<<endl;
 			sem_post(&imprimir);
 		}
-		
-		
 	}
 	
 	if(horasTrabajadas<8){
@@ -163,8 +153,7 @@ int main(int argc, char *argv[])
     pthread_t hilo_4;
     pthread_t hilo_5;
     pthread_t hilo_6;
- 	
-    
+ 	    
     // instanciando los hilos
     pthread_create(&hilo_1,NULL,&becario,&ids[0]); 
     pthread_create(&hilo_2,NULL,&becario,&ids[1]);
@@ -173,10 +162,9 @@ int main(int argc, char *argv[])
     pthread_create(&hilo_5,NULL,&becario,&ids[4]);
 	pthread_create(&hilo_6,NULL,&becario,&ids[5]);
     
-    
 	//uniendo los hilos
     pthread_join(hilo_1, (void **)&status);
-	pthread_join(hilo_2, (void **)&status);
+    pthread_join(hilo_2, (void **)&status);
     pthread_join(hilo_3, (void **)&status);
     pthread_join(hilo_4, (void **)&status);
     pthread_join(hilo_5, (void **)&status);
@@ -184,7 +172,7 @@ int main(int argc, char *argv[])
     
     cout<<endl;
     cout<<"Fin de la jornada"<<endl;
-	cout<<"-------------------"<<endl;
+    cout<<"-------------------"<<endl;
 
 	for(int i =0; i<6;i++){
 		cout<<"Becario "<<i<<" horas trabajadas: "<<horasBecarios[i]<<endl;
