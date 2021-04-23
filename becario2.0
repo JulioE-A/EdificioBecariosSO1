@@ -1,3 +1,6 @@
+/*@autores: Ariel Amador, Julio Estrada, Cristian Valdes
+version: 1.0*/
+
 #include <iostream>
 #include <pthread.h>
 #include <semaphore.h>
